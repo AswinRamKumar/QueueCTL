@@ -1,6 +1,7 @@
 package com.queuectl.db.repository;
 
 import com.queuectl.db.models.Job;
+import com.queuectl.engine.WorkerThread;
 import org.junit.jupiter.api.*;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -39,8 +40,8 @@ public class JobEdgeCaseTest {
                 LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), null);
         store.insert(job);
         try {
-            com.queuectl.engine.WorkerThread w = new com.queuectl.engine.WorkerThread();
-            var m = com.queuectl.engine.WorkerThread.class.getDeclaredMethod("processJob", com.queuectl.db.models.Job.class);
+            WorkerThread w = new WorkerThread();
+            var m = WorkerThread.class.getDeclaredMethod("processJob", Job.class);
             m.setAccessible(true);
             m.invoke(w, job);
         } catch (Exception e) {
@@ -65,12 +66,51 @@ public class JobEdgeCaseTest {
             ResultSet rs = ps.executeQuery();
             Assertions.assertTrue(rs.next() && rs.getInt("cnt") == 1);
         }
-        //restarts by creating a new store
         JobStore newStore = new JobStore();
         boolean stillThere = newStore.getPendingJobs().stream().anyMatch(j -> j.getId().equals(id));
         Assertions.assertTrue(stillThere, "Job should survive restart (DB persistence)");
         try (Connection con = DBConnection.getConnection()) {
             con.prepareStatement("DELETE FROM jobs WHERE id='" + id + "'").executeUpdate();
+        }
+    }
+
+    @Test
+    @Order(4)
+    public void testJobInsertWithNullOptionalFields() {
+        String id = UUID.randomUUID().toString();
+        Job job = new Job(0L, id, "echo testnulls", "pending", 0, 3,
+                LocalDateTime.now(), LocalDateTime.now(), null, null);
+        Assertions.assertDoesNotThrow(() -> store.insert(job), "Insert should handle null optional fields");
+        try (Connection con = DBConnection.getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM jobs WHERE id=?");
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            Assertions.assertTrue(rs.next(), "Job with null fields should exist in DB");
+            con.prepareStatement("DELETE FROM jobs WHERE id='" + id + "'").executeUpdate();
+        } catch (Exception ignored) {}
+    }
+
+    @Test
+    @Order(5)
+    public void testJobMovesToDLQAfterMaxRetries() throws Exception {
+        String id = UUID.randomUUID().toString();
+        Job job = new Job(0L, id, "invalidcmd", "pending", 2, 2,
+                LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), "Simulated failure");
+        store.insert(job);
+        WorkerThread worker = new WorkerThread();
+        var failMethod = WorkerThread.class.getDeclaredMethod("processJob", Job.class);
+        failMethod.setAccessible(true);
+        failMethod.invoke(worker, job);
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement("SELECT * FROM dlq WHERE id=?")) {
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            Assertions.assertTrue(rs.next(), "Job should move to DLQ after exceeding max retries");
+        } finally {
+            try (Connection con = DBConnection.getConnection()) {
+                con.prepareStatement("DELETE FROM dlq WHERE id='" + id + "'").executeUpdate();
+            } catch (Exception ignored) {}
         }
     }
 }

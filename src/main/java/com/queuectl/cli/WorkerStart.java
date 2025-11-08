@@ -14,14 +14,25 @@ public class WorkerStart implements Callable<Integer> {
 
     @Option(
             names = "--count",
-            description = "Number of worker threads to start",
+            description = "Number of worker threads to start (1–100)",
             defaultValue = "1"
     )
     private int count;
 
+    private static final int MAX_WORKERS = 100;
+
     @Override
     public Integer call() {
         try {
+            if (count <= 0) {
+                System.err.println("Worker count must be greater than 0.");
+                return 1;
+            }
+            if (count > MAX_WORKERS) {
+                System.err.println("Worker count too high (" + count + "). Limiting to " + MAX_WORKERS + ".");
+                count = MAX_WORKERS;
+            }
+
             WorkerManager manager = new WorkerManager();
             manager.resumePendingJobs();
             manager.startWorkers(count);

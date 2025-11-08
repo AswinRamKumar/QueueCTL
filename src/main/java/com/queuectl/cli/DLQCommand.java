@@ -4,7 +4,7 @@ import picocli.CommandLine.Command;
 
 @Command(
         name = "dlq",
-        description = "Manage Dead Letter Queue jobs",
+        description = "Manage Dead Letter Queue jobs : View dlq and Retry a dead job",
         subcommands = {
                 DLQList.class,
                 DLQRetry.class

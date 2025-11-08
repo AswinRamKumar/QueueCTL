@@ -49,8 +49,7 @@ public class JobStore {
                     created_at DATETIME DEFAULT NOW()
                 )
             """);
-
-            System.out.println("[DB] Tables verified/created successfully.");
+            //System.out.println("[DB] Tables verified/created successfully.");
         } catch (SQLException e) {
             System.err.println("Error initializing tables: " + e.getMessage());
         }
@@ -61,6 +60,7 @@ public class JobStore {
                 "VALUES (?,?,?,?,?,?,?,?,?)";
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
+
             ps.setString(1, job.getId());
             ps.setString(2, job.getCommand());
             ps.setString(3, job.getState());
@@ -68,13 +68,23 @@ public class JobStore {
             ps.setInt(5, job.getMaxRetries());
             ps.setTimestamp(6, Timestamp.valueOf(job.getCreatedAt()));
             ps.setTimestamp(7, Timestamp.valueOf(job.getUpdatedAt()));
-            ps.setTimestamp(8, Timestamp.valueOf(job.getNextRunAt()));
-            ps.setString(9, job.getLastError());
+
+            if (job.getNextRunAt() != null)
+                ps.setTimestamp(8, Timestamp.valueOf(job.getNextRunAt()));
+            else
+                ps.setNull(8, java.sql.Types.TIMESTAMP);
+
+            if (job.getLastError() != null)
+                ps.setString(9, job.getLastError());
+            else
+                ps.setNull(9, java.sql.Types.VARCHAR);
+
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Insert failed: " + e.getMessage(), e);
         }
     }
+
 
     public List<Job> getPendingJobs() {
         List<Job> jobs = new ArrayList<>();

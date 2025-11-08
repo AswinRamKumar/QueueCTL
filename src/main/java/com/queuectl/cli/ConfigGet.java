@@ -4,7 +4,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 import com.queuectl.util.ConfigStore;
 
-@Command(name="get",description="Get configuration value")
+@Command(name="get",description="Get configuration value for maximum retires and backoff base")
 public class ConfigGet implements Runnable{
     @Parameters(index="0",description="Config key") private String key;
 
