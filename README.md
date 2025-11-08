@@ -135,7 +135,7 @@ Job <id> completed successfully.
 
 Workers use exponential backoff (`2s, 4s, 8s, …`) for failed jobs
 and automatically move jobs to the DLQ after `max_retries`.
-note: maximum number of workers is set to 100 to avoid JVM OutOfMemoryError (heap exhaustion):
+Note: maximum number of workers is set to 100 to avoid JVM OutOfMemoryError (heap exhaustion):
 
 -----
 
