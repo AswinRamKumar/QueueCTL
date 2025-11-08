@@ -3,6 +3,8 @@
 QueueCTL is a lightweight command-line based **job queue system** built in Java.
 It allows you to **enqueue shell commands**, process them with **worker threads**,
 and manage failures with a **Dead Letter Queue (DLQ)** and **retry mechanism**.
+### Project Demo Video
+[Watch Demo]([https://drive.google.com/file/d/1sd3xyz6abc/view?usp=sharing](https://drive.google.com/file/d/1gLaLOvfWH4FvVniutNjwMAXbq4OltF-o/view?usp=sharing))
 
 ## Features
 
