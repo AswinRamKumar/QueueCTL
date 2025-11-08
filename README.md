@@ -212,7 +212,7 @@ All configuration values are stored in `config.properties`
 ## Test Suite Documentation
 
 Detailed explanations of all test cases, structure, and purpose are available in the  
-[**Test README**](src/test/README.md).
+[**Test README**](src/test/java/com/README.md).
 
 This includes:
 - Unit tests for database and worker components  
