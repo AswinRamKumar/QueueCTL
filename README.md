@@ -235,7 +235,7 @@ Job <id> moved to DLQ after max retries.
 
 -----
 
-## Database Schema (Auto-Created)
+## Database Schema
 
 **jobs**
 
