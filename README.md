@@ -205,6 +205,17 @@ All configuration values are stored in `config.properties`
 | `com.queuectl.util` | Config loaders & utilities |
 
 -----
+## Test Suite Documentation
+
+Detailed explanations of all test cases, structure, and purpose are available in the  
+[**Test README**](src/test/java/README.md).
+
+This includes:
+- Unit tests for database and worker components  
+- Integration tests for full job lifecycle  
+- Edge case and concurrency tests  
+- Test database setup and environment configuration
+
 
 ## Example Run
 
