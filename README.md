@@ -64,9 +64,15 @@ db.password=yourpassword
 
 ## Step 4: Build the Project
 
-Use Maven to build and package the project:
+### Build and Run Tests (Recommended)
+This command cleans the project, runs all unit tests, and packages the application:
 ```bash
 mvn clean package
+```
+### Build and Run without Tests
+This command cleans the project and packages the application:
+```bash
+mvn clean package -DskipTests
 ```
 If successful, the executable JAR will be generated at:
 
