@@ -301,7 +301,7 @@ queuectl worker stop
 ## Author
 
 **Aswin Ram Kumar**
-[aswinramkumar5002@gmail.com](mailto:aswinramkumar5002@gmail.com)
+[aswinramkumar5002@gmail.com](mailto:aswinramkumar72@gmail.com)
 [GitHub: AswinRamKumar](https://github.com/AswinRamKumar)
 
 -----
