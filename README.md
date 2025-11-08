@@ -123,7 +123,6 @@ Start 2 worker threads to process pending jobs:
 ```bash
 queuectl worker start --count 2
 ```
-
 You’ll see logs such as:
 ```
 2 workers started.
@@ -135,8 +134,8 @@ Job <id> completed successfully.
 ```
 Workers use exponential backoff (`2s, 4s, 8s, …`) for failed jobs
 and automatically move jobs to the DLQ after `max_retries`.
-####Note
-maximum number of workers is set to 100 to avoid JVM OutOfMemoryError (heap exhaustion):
+
+NOTE: maximum number of workers is set to 100 to avoid JVM OutOfMemoryError (heap exhaustion):
 -----
 
 ### Stop Workers
