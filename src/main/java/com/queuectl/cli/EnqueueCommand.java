@@ -22,9 +22,9 @@ public class EnqueueCommand implements Runnable {
     @Override
     public void run() {
         try {
-            String userConfig = ConfigStore.get("max_retires");// GET properties from config.
-            String defaultConfig = ConfigLoader.get("max_retires");// GET properties from application.
-
+            String userConfig = ConfigStore.get("max_retries");// GET properties from config.
+            String defaultConfig = ConfigLoader.get("max_retries");// GET properties from application.
+//
             int maxRetries = 3; // if  both are absent then use DEFAULT
             if (userConfig != null) {
                 maxRetries = Integer.parseInt(userConfig);
